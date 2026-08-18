@@ -1,0 +1,57 @@
+name: Test ARC Runner Controller
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      runner_set:
+        description: "Runner scale set name to target"
+        required: false
+        default: "arc-runner-set"
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 1: Basic connectivity — confirms a runner pod was scheduled and ran
+  # ────────────────────────────────────────────────────────────────────────────
+  arc-basic:
+    name: "ARC | Basic connectivity"
+    runs-on: arc-runner
+    steps:
+      - name: Runner identity
+        run: |
+          echo "Hostname : $(hostname)"
+          echo "Runner OS: $RUNNER_OS"
+          echo "Runner arch: $RUNNER_ARCH"
+          echo "Runner name: $RUNNER_NAME"
+          echo "Runner labels: ${{ runner.labels }}"
+
+      - name: Verify basic tooling
+        run: |
+          echo "--- bash ---"
+          bash --version | head -1
+          echo "--- curl ---"
+          curl --version | head -1
+          echo "--- git ---"
+          git --version
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 2: Checkout — validates the runner can reach the GitHub API and clone
+  # ────────────────────────────────────────────────────────────────────────────
+  arc-checkout:
+    name: "ARC | Checkout & file I/O"
+    runs-on: arc-runner
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List repository contents
+        run: ls -la
+
+      - name: Write and read a temp file
+        run: |
+          echo "arc-test-$(date +%s)" > /tmp/arc-test.txt
+          cat /tmp/arc-test.txt
+          rm /tmp/arc-test.txt
