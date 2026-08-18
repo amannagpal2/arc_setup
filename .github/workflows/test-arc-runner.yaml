@@ -3,7 +3,7 @@ name: Test ARC Runner Controller
 on:
   push:
     branches:
-      - main
+      - feature
   pull_request:
   workflow_dispatch:
     inputs:
@@ -18,7 +18,7 @@ jobs:
   # ────────────────────────────────────────────────────────────────────────────
   arc-basic:
     name: "ARC | Basic connectivity"
-    runs-on: arc-runner
+    runs-on: ubuntu-latest
     steps:
       - name: Runner identity
         run: |
