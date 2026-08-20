@@ -42,7 +42,7 @@ jobs:
   # ────────────────────────────────────────────────────────────────────────────
   arc-checkout:
     name: "ARC | Checkout & file I/O"
-    runs-on: arc-runner
+    runs-on: arc-runner-set
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
